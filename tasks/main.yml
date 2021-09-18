@@ -1,0 +1,35 @@
+    - name: Install MySQL community repository
+      yum:
+        name: "http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm"
+        state: present
+
+    - name: Install MySQL database
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - "mysql-server"
+        - "mysql-devel"
+
+    - name: Start MySQL Service
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Install mysql-python3 package
+      yum:
+        name: MySQL-python3
+        state: present
+
+    - name: Create Application Database
+      mysql_db:
+        name: "{{ db_name }}"
+        state: present
+
+    - name: Create Database user
+      mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_user_pass }}"
+        priv: '*.*:ALL'
+        state: present
